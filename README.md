@@ -1,4 +1,4 @@
 MutabilityDetector4FindBugs
 ===========================
 
-Mutability Detector via the eclipse plugin FindBugs!
+Run Mutability Detector during a FindBugs analysis to check all your classes annotated with @Immutable.
