@@ -5,6 +5,8 @@ website="http://www.mutabilitydetector.org"
 defaultenabled="true" >
 <Detector class="org.mutabilitydetector.findbugs.ThisPluginDetector" speed="fast"
 	reports="MUTDEC_ABSTRACT_TYPE_TO_FIELD,
+		MUTDEC_ABSTRACT_COLLECTION_TYPE_TO_FIELD,
+		MUTDEC_COLLECTION_FIELD_WITH_MUTABLE_ELEMENT_TYPE,
 		MUTDEC_CAN_BE_SUBCLASSED,
 		MUTDEC_ABSTRACT_TYPE_INHERENTLY_MUTABLE,
 		MUTDEC_ARRAY_TYPE_INHERENTLY_MUTABLE,
@@ -16,6 +18,16 @@ defaultenabled="true" >
 
 <!-- Each bug pattern -->
 <BugPattern type="MUTDEC_ABSTRACT_TYPE_TO_FIELD" abbrev="MUTDEC" category="CORRECTNESS">
+<Details>
+<![CDATA[]]>
+</Details>
+</BugPattern>
+<BugPattern type="MUTDEC_ABSTRACT_COLLECTION_TYPE_TO_FIELD" abbrev="MUTDEC" category="CORRECTNESS">
+<Details>
+<![CDATA[]]>
+</Details>
+</BugPattern>
+<BugPattern type="MUTDEC_COLLECTION_FIELD_WITH_MUTABLE_ELEMENT_TYPE" abbrev="MUTDEC" category="CORRECTNESS">
 <Details>
 <![CDATA[]]>
 </Details>

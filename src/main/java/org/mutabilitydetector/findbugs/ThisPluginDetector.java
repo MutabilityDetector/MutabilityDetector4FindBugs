@@ -1,6 +1,8 @@
 package org.mutabilitydetector.findbugs;
 
 
+import static org.mutabilitydetector.Configurations.OUT_OF_THE_BOX_CONFIGURATION;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -9,9 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mutabilitydetector.AnalysisSession;
-import org.mutabilitydetector.CheckerRunnerFactory;
-import org.mutabilitydetector.IAnalysisSession;
-import org.mutabilitydetector.MutabilityCheckerFactory;
+import org.mutabilitydetector.ThreadUnsafeAnalysisSession;
+import org.mutabilitydetector.asmoverride.AsmVerifierFactory;
+import org.mutabilitydetector.asmoverride.ClassLoadingVerifierFactory;
+import org.mutabilitydetector.checkers.CheckerRunner.ExceptionPolicy;
+import org.mutabilitydetector.checkers.ClassPathBasedCheckerRunnerFactory;
+import org.mutabilitydetector.checkers.MutabilityCheckerFactory;
+import org.mutabilitydetector.classloading.CachingAnalysisClassLoader;
+import org.mutabilitydetector.classloading.ClassForNameWrapper;
+import org.mutabilitydetector.cli.URLFallbackClassLoader;
 import org.mutabilitydetector.repackaged.com.google.classpath.ClassPath;
 
 import edu.umd.cs.findbugs.BugReporter;
@@ -40,9 +48,9 @@ public class ThisPluginDetector implements Detector {
     }
     
     public static class AnalysisSessionHolder {
-        private volatile IAnalysisSession analysisSession = null;
+        private volatile AnalysisSession analysisSession = null;
         
-        public IAnalysisSession lazyGet() {
+        public AnalysisSession lazyGet() {
             if (analysisSession == null) {
                 analysisSession = createNewAnalysisSession();
             }
@@ -50,31 +58,40 @@ public class ThisPluginDetector implements Detector {
             return analysisSession;
         }
 
-        private IAnalysisSession createNewAnalysisSession() {
+        private AnalysisSession createNewAnalysisSession() {
             return makeFindBugsClasspathAvailable();
         }
         
-        private IAnalysisSession makeFindBugsClasspathAvailable() {
+        private AnalysisSession makeFindBugsClasspathAvailable() {
             IClassPath findBugsClassPath = Global.getAnalysisCache().getClassPath();
             
             try {
                 List<String> codeBasePaths = new FBCodeBasePathExtractor().listOfCodeBasePaths(findBugsClassPath);
                 
-                setCustomClassLoader(codeBasePaths);
-                
                 ClassPath mutabilityDetectorClasspath = new FBClasspathConverter().createClassPathForCodeBases(codeBasePaths);
-                return AnalysisSession.createWithGivenClassPath(mutabilityDetectorClasspath, 
-                        new CheckerRunnerFactory(mutabilityDetectorClasspath), 
-                        new MutabilityCheckerFactory());
+                AsmVerifierFactory verifierFactory = createClassLoadingVerifierFactory(codeBasePaths.toArray(new String[0]));
+
+                return ThreadUnsafeAnalysisSession.createWithGivenClassPath(mutabilityDetectorClasspath, 
+                        new ClassPathBasedCheckerRunnerFactory(mutabilityDetectorClasspath, ExceptionPolicy.FAIL_FAST), 
+                        new MutabilityCheckerFactory(),
+                        verifierFactory,
+                        OUT_OF_THE_BOX_CONFIGURATION);
+                
             } catch (InterruptedException e) {
                 throw new ExceptionInInitializerError("Problem getting class path entries from FindBugs");
             }
         }
         
-        private void setCustomClassLoader(List<String> codeBasePaths) {
-            List<URL> urlList = new ArrayList<URL>();
+        private ClassLoadingVerifierFactory createClassLoadingVerifierFactory(String[] classPathFiles) {
+            return new ClassLoadingVerifierFactory(
+                    new CachingAnalysisClassLoader(
+                            new URLFallbackClassLoader(getCustomClassLoader(classPathFiles), new ClassForNameWrapper())));
+        }
+        
+        private URLClassLoader getCustomClassLoader(String[] classPathFiles) {
+            List<URL> urlList = new ArrayList<URL>(classPathFiles.length);
             
-            for (String classPathUrl : codeBasePaths) {
+            for (String classPathUrl : classPathFiles) {
                 try {
                     URL toAdd = new File(classPathUrl).toURI().toURL();
                     urlList.add(toAdd);
@@ -82,11 +99,7 @@ public class ThisPluginDetector implements Detector {
                     System.err.printf("Classpath option %s is invalid.", classPathUrl);
                 }
             }
-            
-            ClassLoader classLoader = new URLClassLoader(urlList.toArray(new URL[] {}), 
-                    Thread.currentThread().getContextClassLoader());
-            
-            Thread.currentThread().setContextClassLoader(classLoader);
+            return new URLClassLoader(urlList.toArray(new URL[urlList.size()]));
         }
     }
 

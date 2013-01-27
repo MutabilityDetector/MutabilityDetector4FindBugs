@@ -14,12 +14,17 @@ import org.junit.runner.RunWith;
 import org.mutabilitydetector.findbugs.warningtypes.AbstractInherentlyMutable;
 import org.mutabilitydetector.findbugs.warningtypes.AssignAbstractTypeToField;
 import org.mutabilitydetector.findbugs.warningtypes.CanBeSubclassed;
+import org.mutabilitydetector.findbugs.warningtypes.CopiesAndWrapsCollectionFieldOfMutableType;
+import org.mutabilitydetector.findbugs.warningtypes.CopiesButDoesNotWrapCollectionField;
 import org.mutabilitydetector.findbugs.warningtypes.EscapedThisReference;
+import org.mutabilitydetector.findbugs.warningtypes.HasStringField;
 import org.mutabilitydetector.findbugs.warningtypes.MutableTypeToField;
 import org.mutabilitydetector.findbugs.warningtypes.NonFinalField;
 import org.mutabilitydetector.findbugs.warningtypes.PublishedNonFinalField;
 import org.mutabilitydetector.findbugs.warningtypes.ReassignField;
+import org.mutabilitydetector.findbugs.warningtypes.SafelyWrapsAndCopiesCollectionField;
 import org.mutabilitydetector.findbugs.warningtypes.UseArrayField;
+import org.mutabilitydetector.findbugs.warningtypes.WrapsButDoesNotCopyCollectionField;
 import org.mutabilitydetector.locations.ClassName;
 
 import com.youdevise.fbplugins.tdd4fb.DetectorAssert;
@@ -31,7 +36,10 @@ import edu.umd.cs.findbugs.detect.NoteJCIPAnnotation;
 
 @RunWith(Theories.class)
 public class MutabilityDetectorTest {
-
+    
+    private BugReporter bugReporter;
+    private Detector detector;
+    
     @Before public void setUp() throws Exception {
         bugReporter = DetectorAssert.bugReporterForTesting();
         detector = new ThisPluginDetector(bugReporter);
@@ -70,10 +78,10 @@ public class MutabilityDetectorTest {
         new BugDataPoint(PublishedNonFinalField.class, "MUTDEC_PUBLISHED_NON_FINAL_FIELD"),
         new BugDataPoint(ReassignField.class, "MUTDEC_FIELD_CAN_BE_REASSIGNED"),
         new BugDataPoint(UseArrayField.class, "MUTDEC_ARRAY_TYPE_INHERENTLY_MUTABLE"),
+        new BugDataPoint(WrapsButDoesNotCopyCollectionField.class, "MUTDEC_ABSTRACT_COLLECTION_TYPE_TO_FIELD"),
+        new BugDataPoint(CopiesButDoesNotWrapCollectionField.class, "MUTDEC_MUTABLE_TYPE_TO_FIELD"),
+        new BugDataPoint(CopiesAndWrapsCollectionFieldOfMutableType.class, "MUTDEC_COLLECTION_FIELD_WITH_MUTABLE_ELEMENT_TYPE"),
     };
-    
-    private BugReporter bugReporter;
-    private Detector detector;
     
     private static class BugDataPoint {
         public final Class<?> toAnalyse;
@@ -86,11 +94,34 @@ public class MutabilityDetectorTest {
     }
     
     @Theory
+    public void noWarningIsRegisteredForActuallyImmutableClasses(NoBugDataPoint expected) throws Exception {
+        bugReporter = DetectorAssert.bugReporterForTesting();
+        detector = new ThisPluginDetector(bugReporter);
+        
+        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
+        assertNoBugsReported(expected.toAnalyse, detector, bugReporter);
+    }
+    
+    @DataPoints public static NoBugDataPoint[] expectedNotToBeReportedAsBugs = new NoBugDataPoint[] {
+        new NoBugDataPoint(ImmutableExample.class),
+        new NoBugDataPoint(HasStringField.class),
+        new NoBugDataPoint(SafelyWrapsAndCopiesCollectionField.class),
+    };
+    
+    private static class NoBugDataPoint {
+        public final Class<?> toAnalyse;
+
+        public NoBugDataPoint(Class<?> toAnalyse) {
+            this.toAnalyse = toAnalyse;
+        }
+    }
+    
+    @Theory
     public void correctWarningTypeIsRegistered(BugDataPoint expected) throws Exception {
         bugReporter = DetectorAssert.bugReporterForTesting();
         detector = new ThisPluginDetector(bugReporter);
         
-        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);       
+        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
         assertBugReported(expected.toAnalyse, detector, bugReporter, DetectorAssert.ofType(expected.bugType));
     }
     

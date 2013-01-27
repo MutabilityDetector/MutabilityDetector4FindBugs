@@ -2,7 +2,6 @@ package org.mutabilitydetector.findbugs;
 
 import static java.lang.String.format;
 import static org.mutabilitydetector.MutabilityReason.CANNOT_ANALYSE;
-import static org.mutabilitydetector.MutabilityReason.NOT_DECLARED_FINAL;
 import static org.mutabilitydetector.MutabilityReason.NULL_REASON;
 
 import java.io.BufferedWriter;
@@ -142,9 +141,8 @@ public class WriteFindBugsConfigFiles {
         return content;
     }
     
-    @SuppressWarnings("deprecation")
     private static boolean isReasonToExclude(MutabilityReason reason) {
-        return reason.isOneOf(NULL_REASON, CANNOT_ANALYSE, NOT_DECLARED_FINAL);
+        return reason.isOneOf(NULL_REASON, CANNOT_ANALYSE);
     }
 
     @SuppressWarnings("resource")

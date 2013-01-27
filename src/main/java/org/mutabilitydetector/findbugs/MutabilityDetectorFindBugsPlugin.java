@@ -23,6 +23,8 @@
 
 package org.mutabilitydetector.findbugs;
 
+import static org.mutabilitydetector.locations.Dotted.dotted;
+
 import java.util.Map;
 
 import org.mutabilitydetector.AnalysisResult;
@@ -57,7 +59,7 @@ public class MutabilityDetectorFindBugsPlugin extends AnnotationDetector {
     public void visitAnnotation(String annotationClass, Map<String, Object> map, boolean runtimeVisible) {
         super.visitAnnotation(annotationClass, map, runtimeVisible);
         
-        doMutabilityDetectionOnCurrentClass = annotationClass.endsWith(".Immutable");
+        doMutabilityDetectionOnCurrentClass = annotationClass.equals("Immutable") || annotationClass.endsWith(".Immutable");
     }
    
     public void visitClassContext(ClassContext classContext) {
@@ -72,7 +74,7 @@ public class MutabilityDetectorFindBugsPlugin extends AnnotationDetector {
     
     private void doMutabilityAnalysis(ClassContext classContext) {
         String toAnalyse = classContext.getClassDescriptor().getDottedClassName();
-        AnalysisResult result = analysisSessionHolder.lazyGet().resultFor(toAnalyse).result;
+        AnalysisResult result = analysisSessionHolder.lazyGet().resultFor(dotted(toAnalyse));
         
         if (result.isImmutable != IsImmutable.IMMUTABLE) {
             
