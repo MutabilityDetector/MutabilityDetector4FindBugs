@@ -44,7 +44,7 @@ public class MutabilityDetectorTest {
         bugReporter = DetectorAssert.bugReporterForTesting();
         detector = new ThisPluginDetector(bugReporter);
         
-        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);        
+        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
     }
     
     @Test
@@ -56,7 +56,7 @@ public class MutabilityDetectorTest {
     public void doesNotRaiseBug() throws Exception {
         assertNoBugsReported(ClassName.class, detector, bugReporter);
     }
-
+    
     @Test
     public void doesNotRaiseBugForMutableClassNotAnnotatedWithImmutable() throws Exception {
         assertNoBugsReported(MutableButNotAnnotated.class, detector, bugReporter);
