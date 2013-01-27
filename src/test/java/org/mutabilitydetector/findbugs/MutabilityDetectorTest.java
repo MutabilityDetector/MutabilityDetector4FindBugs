@@ -67,6 +67,15 @@ public class MutabilityDetectorTest {
         assertBugReported(MutableAndAnnotated.class, detector, bugReporter);
     }
     
+    private static class BugDataPoint {
+        public final Class<?> toAnalyse;
+        public final String bugType;
+        
+        public BugDataPoint(Class<?> toAnalyse, String expectedBugType) {
+            this.toAnalyse = toAnalyse;
+            this.bugType = expectedBugType;
+        }
+    }
     
     @DataPoints public static BugDataPoint[] expectedBugs = new BugDataPoint[] {
         new BugDataPoint(AbstractInherentlyMutable.class, "MUTDEC_ABSTRACT_TYPE_INHERENTLY_MUTABLE"),
@@ -83,15 +92,29 @@ public class MutabilityDetectorTest {
         new BugDataPoint(CopiesAndWrapsCollectionFieldOfMutableType.class, "MUTDEC_COLLECTION_FIELD_WITH_MUTABLE_ELEMENT_TYPE"),
     };
     
-    private static class BugDataPoint {
+    private static class NoBugDataPoint {
         public final Class<?> toAnalyse;
-        public final String bugType;
-
-        public BugDataPoint(Class<?> toAnalyse, String expectedBugType) {
+        
+        public NoBugDataPoint(Class<?> toAnalyse) {
             this.toAnalyse = toAnalyse;
-            this.bugType = expectedBugType;
         }
     }
+
+    @Theory
+    public void correctWarningTypeIsRegistered(BugDataPoint expected) throws Exception {
+        bugReporter = DetectorAssert.bugReporterForTesting();
+        detector = new ThisPluginDetector(bugReporter);
+        
+        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
+        assertBugReported(expected.toAnalyse, detector, bugReporter, DetectorAssert.ofType(expected.bugType));
+    }
+
+    @DataPoints public static NoBugDataPoint[] expectedNotToBeReportedAsBugs = new NoBugDataPoint[] {
+        new NoBugDataPoint(ImmutableExample.class),
+        new NoBugDataPoint(HasStringField.class),
+        new NoBugDataPoint(SafelyWrapsAndCopiesCollectionField.class),
+    };
+    
     
     @Theory
     public void noWarningIsRegisteredForActuallyImmutableClasses(NoBugDataPoint expected) throws Exception {
@@ -101,30 +124,6 @@ public class MutabilityDetectorTest {
         setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
         assertNoBugsReported(expected.toAnalyse, detector, bugReporter);
     }
-    
-    @DataPoints public static NoBugDataPoint[] expectedNotToBeReportedAsBugs = new NoBugDataPoint[] {
-        new NoBugDataPoint(ImmutableExample.class),
-        new NoBugDataPoint(HasStringField.class),
-        new NoBugDataPoint(SafelyWrapsAndCopiesCollectionField.class),
-    };
-    
-    private static class NoBugDataPoint {
-        public final Class<?> toAnalyse;
-
-        public NoBugDataPoint(Class<?> toAnalyse) {
-            this.toAnalyse = toAnalyse;
-        }
-    }
-    
-    @Theory
-    public void correctWarningTypeIsRegistered(BugDataPoint expected) throws Exception {
-        bugReporter = DetectorAssert.bugReporterForTesting();
-        detector = new ThisPluginDetector(bugReporter);
-        
-        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
-        assertBugReported(expected.toAnalyse, detector, bugReporter, DetectorAssert.ofType(expected.bugType));
-    }
-    
     
     private void setupAnalysisSessionToHaveScannedForImmutableAnnotation(Class<?> lookForAnnotation) throws Exception {
         runAnArbritaryDetectorToInitialiseFindBugs(lookForAnnotation);

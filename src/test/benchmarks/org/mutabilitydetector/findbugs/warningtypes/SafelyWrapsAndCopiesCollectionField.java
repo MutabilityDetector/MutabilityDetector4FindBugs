@@ -7,7 +7,7 @@ import java.util.List;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-public class SafelyWrapsAndCopiesCollectionField {
+public final class SafelyWrapsAndCopiesCollectionField {
     private final List<String> myStrings;
 
     public SafelyWrapsAndCopiesCollectionField(List<String> myStrings) {
