@@ -29,10 +29,10 @@ import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.IClassPath;
 
 public class ThisPluginDetector implements Detector {
-    private static final String loggingLabel = MutabilityDetectorFindBugsPlugin.class.getSimpleName();
+    private static final String LOGGING_LABEL = MutabilityDetectorFindBugsPlugin.class.getSimpleName();
     
     static {
-        System.out.printf("Registered plugin detector [%s]%n", loggingLabel);
+        System.out.format("Registered plugin detector [%s]%n", LOGGING_LABEL);
     }
     
     private final BugReporter bugReporter;
@@ -96,7 +96,7 @@ public class ThisPluginDetector implements Detector {
                     URL toAdd = new File(classPathUrl).toURI().toURL();
                     urlList.add(toAdd);
                 } catch (MalformedURLException e) {
-                    System.err.printf("Classpath option %s is invalid.", classPathUrl);
+                    System.err.format("Classpath option %s is invalid.", classPathUrl);
                 }
             }
             return new URLClassLoader(urlList.toArray(new URL[urlList.size()]));
