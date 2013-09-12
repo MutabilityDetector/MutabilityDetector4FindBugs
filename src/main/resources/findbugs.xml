@@ -3,7 +3,7 @@
 pluginid="org.mutabilitydetector.findbugs"
 website="http://www.mutabilitydetector.org"
 defaultenabled="true" >
-<Detector class="org.mutabilitydetector.findbugs.ThisPluginDetector" speed="fast"
+<Detector class="org.mutabilitydetector.findbugs.MutabilityDetector4FindBugs" speed="fast"
 	reports="MUTDEC_ABSTRACT_TYPE_TO_FIELD,
 		MUTDEC_ABSTRACT_COLLECTION_TYPE_TO_FIELD,
 		MUTDEC_COLLECTION_FIELD_WITH_MUTABLE_ELEMENT_TYPE,

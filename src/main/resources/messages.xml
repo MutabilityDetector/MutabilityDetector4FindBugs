@@ -10,7 +10,7 @@
 </Plugin>
 
 
-<Detector class="org.mutabilitydetector.findbugs.ThisPluginDetector">
+<Detector class="org.mutabilitydetector.findbugs.MutabilityDetector4FindBugs">
 <Details>
 <![CDATA[
 <p>This plugin detects classes annotated with @Immutable that are actually mutable</p>

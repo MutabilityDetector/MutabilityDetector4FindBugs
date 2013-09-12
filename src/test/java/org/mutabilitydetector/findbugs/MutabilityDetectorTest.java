@@ -42,7 +42,7 @@ public class MutabilityDetectorTest {
     
     @Before public void setUp() throws Exception {
         bugReporter = DetectorAssert.bugReporterForTesting();
-        detector = new ThisPluginDetector(bugReporter);
+        detector = new MutabilityDetector4FindBugs(bugReporter);
         
         setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
     }
@@ -103,7 +103,7 @@ public class MutabilityDetectorTest {
     @Theory
     public void correctWarningTypeIsRegistered(BugDataPoint expected) throws Exception {
         bugReporter = DetectorAssert.bugReporterForTesting();
-        detector = new ThisPluginDetector(bugReporter);
+        detector = new MutabilityDetector4FindBugs(bugReporter);
         
         setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
         assertBugReported(expected.toAnalyse, detector, bugReporter, DetectorAssert.ofType(expected.bugType));
@@ -119,7 +119,7 @@ public class MutabilityDetectorTest {
     @Theory
     public void noWarningIsRegisteredForActuallyImmutableClasses(NoBugDataPoint expected) throws Exception {
         bugReporter = DetectorAssert.bugReporterForTesting();
-        detector = new ThisPluginDetector(bugReporter);
+        detector = new MutabilityDetector4FindBugs(bugReporter);
         
         setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
         assertNoBugsReported(expected.toAnalyse, detector, bugReporter);

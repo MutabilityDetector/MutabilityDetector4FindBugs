@@ -24,7 +24,7 @@ import java.util.Map;
 import org.mutabilitydetector.AnalysisResult;
 import org.mutabilitydetector.IsImmutable;
 import org.mutabilitydetector.MutableReasonDetail;
-import org.mutabilitydetector.findbugs.ThisPluginDetector.AnalysisSessionHolder;
+import org.mutabilitydetector.findbugs.MutabilityDetector4FindBugs.AnalysisSessionHolder;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
@@ -33,7 +33,7 @@ import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.bcel.AnnotationDetector;
 
-public class MutabilityDetectorFindBugsPlugin extends AnnotationDetector {
+public class IncorrectlyAppliedImmutableAnnotationDetector extends AnnotationDetector {
 
     private static final int PRIORITY_TO_REPORT = Priorities.NORMAL_PRIORITY;
     private final BugReporter bugReporter;
@@ -42,7 +42,7 @@ public class MutabilityDetectorFindBugsPlugin extends AnnotationDetector {
     
     private boolean doMutabilityDetectionOnCurrentClass;
 
-    public MutabilityDetectorFindBugsPlugin(Detector pluginToRegisterBugsWith, BugReporter bugReporter, AnalysisSessionHolder analysisSessionHolder) {
+    public IncorrectlyAppliedImmutableAnnotationDetector(Detector pluginToRegisterBugsWith, BugReporter bugReporter, AnalysisSessionHolder analysisSessionHolder) {
         this.pluginToRegisterBugsWith = pluginToRegisterBugsWith;
         this.bugReporter = bugReporter;
         this.analysisSessionHolder = analysisSessionHolder;

@@ -11,8 +11,8 @@ import javax.annotation.concurrent.Immutable;
 public final class CopiesAndWrapsCollectionFieldOfMutableType {
     private final List<Date> myDates;
 
-    public CopiesAndWrapsCollectionFieldOfMutableType(List<Date> myStrings) {
-        this.myDates = Collections.unmodifiableList(new LinkedList<Date>(myStrings));
+    public CopiesAndWrapsCollectionFieldOfMutableType(List<Date> myDates) {
+        this.myDates = Collections.unmodifiableList(new LinkedList<Date>(myDates));
     }
     
     public Date firstDate() {

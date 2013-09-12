@@ -33,7 +33,7 @@ public class WriteFindBugsConfigFiles {
         .append("</Details>\n")
         .append("</Plugin>\n\n\n")
         
-        .append("<Detector class=\"" + ThisPluginDetector.class.getName() + "\">\n")
+        .append("<Detector class=\"" + MutabilityDetector4FindBugs.class.getName() + "\">\n")
         .append("<Details>\n")
         .append("<![CDATA[\n")
         .append("<p>This plugin detects classes annotated with @Immutable that are actually mutable</p>\n")
@@ -80,7 +80,7 @@ public class WriteFindBugsConfigFiles {
                 "pluginid=\"org.mutabilitydetector.findbugs\"\n" +
                 "website=\"http://www.mutabilitydetector.org\"\n" +
                 "defaultenabled=\"true\" >\n")
-        .append("<Detector class=\"" + ThisPluginDetector.class.getName() + "\" speed=\"fast\"\n" +
+        .append("<Detector class=\"" + MutabilityDetector4FindBugs.class.getName() + "\" speed=\"fast\"\n" +
                 "\treports=\"" + reasonsAsCsvList(includedReasons) + "\"" +
                 "/>\n\n")
         .append("<!-- Each bug pattern -->\n");

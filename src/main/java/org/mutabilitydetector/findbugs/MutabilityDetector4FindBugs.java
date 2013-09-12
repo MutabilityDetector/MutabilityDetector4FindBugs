@@ -28,33 +28,40 @@ import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.IClassPath;
 
-public class ThisPluginDetector implements Detector {
-    private static final String loggingLabel = MutabilityDetectorFindBugsPlugin.class.getSimpleName();
+public class MutabilityDetector4FindBugs implements Detector {
+    private static final String loggingLabel = MutabilityDetector4FindBugs.class.getSimpleName();
     
     static {
         System.out.printf("Registered plugin detector [%s]%n", loggingLabel);
     }
     
-    private final BugReporter bugReporter;
+    private BugReporter bugReporter;
     
-    public ThisPluginDetector(BugReporter bugReporter) {
+    public MutabilityDetector4FindBugs(BugReporter bugReporter) {
         this.bugReporter = bugReporter;
     }
 
     public void report() { }
     
     public void visitClassContext(ClassContext classContext) {
-        new MutabilityDetectorFindBugsPlugin(this, bugReporter, new AnalysisSessionHolder()).visitClassContext(classContext);
+        new IncorrectlyAppliedImmutableAnnotationDetector(this, bugReporter, new AnalysisSessionHolder()).visitClassContext(classContext);
     }
     
     public static class AnalysisSessionHolder {
-        private volatile AnalysisSession analysisSession = null;
+        private volatile boolean initialised = false;
+        private AnalysisSession analysisSession = null;
         
         public AnalysisSession lazyGet() {
-            if (analysisSession == null) {
-                analysisSession = createNewAnalysisSession();
+            if (!initialised) {
+                synchronized (this) {
+                    if (!initialised) {
+                        AnalysisSession session = createNewAnalysisSession();
+                        analysisSession = session;
+                        initialised = true;
+                        return session;
+                    }
+                }
             }
-            
             return analysisSession;
         }
 

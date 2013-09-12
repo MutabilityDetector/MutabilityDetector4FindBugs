@@ -16,4 +16,5 @@ public final class WrapsButDoesNotCopyCollectionField {
     public String firstString() {
         return myStrings.get(0);
     }
+    
 }
