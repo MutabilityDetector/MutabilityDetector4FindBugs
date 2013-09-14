@@ -72,6 +72,12 @@
       </properties>
     </profile>
     <profile>
+      <id>build-with-findbugs-v2.0.1</id>
+      <properties>
+        <findbugs.version>2.0.1</findbugs.version>
+      </properties>
+    </profile>
+    <profile>
       <id>build-with-findbugs-v2.0.2</id>
       <properties>
         <findbugs.version>2.0.2</findbugs.version>
