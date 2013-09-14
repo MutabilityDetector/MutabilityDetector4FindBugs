@@ -3,8 +3,6 @@ package org.mutabilitydetector.findbugs;
 import static com.youdevise.fbplugins.tdd4fb.DetectorAssert.assertBugReported;
 import static com.youdevise.fbplugins.tdd4fb.DetectorAssert.assertNoBugsReported;
 
-import java.lang.reflect.Method;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
@@ -31,8 +29,6 @@ import com.youdevise.fbplugins.tdd4fb.DetectorAssert;
 
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.ba.AnalysisContext;
-import edu.umd.cs.findbugs.detect.NoteJCIPAnnotation;
 
 @RunWith(Theories.class)
 public class MutabilityDetectorTest {
@@ -43,8 +39,6 @@ public class MutabilityDetectorTest {
     @Before public void setUp() throws Exception {
         bugReporter = DetectorAssert.bugReporterForTesting();
         detector = new MutabilityDetector4FindBugs(bugReporter);
-        
-        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
     }
     
     @Test
@@ -105,7 +99,6 @@ public class MutabilityDetectorTest {
         bugReporter = DetectorAssert.bugReporterForTesting();
         detector = new MutabilityDetector4FindBugs(bugReporter);
         
-        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
         assertBugReported(expected.toAnalyse, detector, bugReporter, DetectorAssert.ofType(expected.bugType));
     }
 
@@ -121,24 +114,6 @@ public class MutabilityDetectorTest {
         bugReporter = DetectorAssert.bugReporterForTesting();
         detector = new MutabilityDetector4FindBugs(bugReporter);
         
-        setupAnalysisSessionToHaveScannedForImmutableAnnotation(ImmutableExample.class);
         assertNoBugsReported(expected.toAnalyse, detector, bugReporter);
-    }
-    
-    private void setupAnalysisSessionToHaveScannedForImmutableAnnotation(Class<?> lookForAnnotation) throws Exception {
-        runAnArbritaryDetectorToInitialiseFindBugs(lookForAnnotation);
-        
-        AnalysisContext.currentAnalysisContext()
-            .getJCIPAnnotationDatabase()
-            .getEntryForClass(lookForAnnotation.getClass().getName())
-            .put("Immutable", null);
-    }
-
-    private void runAnArbritaryDetectorToInitialiseFindBugs(Class<?> lookForAnnotation) throws Exception {
-        Class<?> detectorRunnerClass = Class.forName("com.youdevise.fbplugins.tdd4fb.DetectorRunner");
-        Method runDetector = detectorRunnerClass.getMethod("runDetectorOnClass", Detector.class, Class.class, BugReporter.class);
-        runDetector.setAccessible(true);
-        BugReporter reporterForTesting = DetectorAssert.bugReporterForTesting();
-        runDetector.invoke(null, new NoteJCIPAnnotation(reporterForTesting), lookForAnnotation, reporterForTesting);
     }
 }
