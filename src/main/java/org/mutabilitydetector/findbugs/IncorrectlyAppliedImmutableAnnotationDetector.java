@@ -21,6 +21,7 @@ import static org.mutabilitydetector.locations.Dotted.dotted;
 
 import java.util.Map;
 
+import org.apache.bcel.classfile.ElementValue;
 import org.mutabilitydetector.AnalysisResult;
 import org.mutabilitydetector.IsImmutable;
 import org.mutabilitydetector.MutableReasonDetail;
@@ -50,7 +51,7 @@ public class IncorrectlyAppliedImmutableAnnotationDetector extends AnnotationDet
 
     
     @Override
-    public void visitAnnotation(String annotationClass, Map<String, Object> map, boolean runtimeVisible) {
+    public void visitAnnotation(String annotationClass, Map<String, ElementValue> map, boolean runtimeVisible) {
         super.visitAnnotation(annotationClass, map, runtimeVisible);
         
         doMutabilityDetectionOnCurrentClass = annotationClass.equals("Immutable") || annotationClass.endsWith(".Immutable");
