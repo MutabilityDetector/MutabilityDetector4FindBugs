@@ -13,6 +13,8 @@ import java.util.List;
 import org.mutabilitydetector.MutabilityReason;
 
 public class WriteFindBugsConfigFiles {
+    
+    private static final String RESOURCES_DIR = "src/main/plugin_jar_resources/";
 
     
     public static void main(String[] args) throws Exception {
@@ -60,7 +62,7 @@ public class WriteFindBugsConfigFiles {
         
         content.append("</MessageCollection>\n");
         
-        writeFile("src/main/resources/messages.xml", content);
+        writeFile(RESOURCES_DIR + "messages.xml", content);
     }
 
     private static String humanReadableReasonCode(MutabilityReason reason) {
@@ -96,7 +98,7 @@ public class WriteFindBugsConfigFiles {
         }
         content.append("</FindbugsPlugin>\n");
         
-        writeFile("src/main/resources/findbugs.xml", content);
+        writeFile(RESOURCES_DIR + "findbugs.xml", content);
     }
 
     private static String reasonsAsCsvList(List<MutabilityReason> includedReasons) {
