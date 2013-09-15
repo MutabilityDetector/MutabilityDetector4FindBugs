@@ -29,10 +29,10 @@ import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.IClassPath;
 
 public class MutabilityDetector4FindBugs implements Detector {
-    private static final String loggingLabel = MutabilityDetector4FindBugs.class.getSimpleName();
+    private static final String LOGGING_LABEL = MutabilityDetector4FindBugs.class.getSimpleName();
     
     static {
-        System.out.printf("Registered plugin detector [%s]%n", loggingLabel);
+        System.out.format("Registered plugin detector [%s]%n", LOGGING_LABEL);
     }
     
     private BugReporter bugReporter;
