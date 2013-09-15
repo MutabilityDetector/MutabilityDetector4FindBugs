@@ -72,21 +72,16 @@ public class MutabilityDetector4FindBugs implements Detector {
         private AnalysisSession makeFindBugsClasspathAvailable() {
             IClassPath findBugsClassPath = Global.getAnalysisCache().getClassPath();
             
-            try {
-                List<String> codeBasePaths = new FBCodeBasePathExtractor().listOfCodeBasePaths(findBugsClassPath);
-                
-                ClassPath mutabilityDetectorClasspath = new FBClasspathConverter().createClassPathForCodeBases(codeBasePaths);
-                AsmVerifierFactory verifierFactory = createClassLoadingVerifierFactory(codeBasePaths.toArray(new String[0]));
+            List<String> codeBasePaths = new FBCodeBasePathExtractor().listOfCodeBasePaths(findBugsClassPath);
+            
+            ClassPath mutabilityDetectorClasspath = new FBClasspathConverter().createClassPathForCodeBases(codeBasePaths);
+            AsmVerifierFactory verifierFactory = createClassLoadingVerifierFactory(codeBasePaths.toArray(new String[0]));
 
-                return ThreadUnsafeAnalysisSession.createWithGivenClassPath(mutabilityDetectorClasspath, 
-                        new ClassPathBasedCheckerRunnerFactory(mutabilityDetectorClasspath, ExceptionPolicy.FAIL_FAST), 
-                        new MutabilityCheckerFactory(),
-                        verifierFactory,
-                        OUT_OF_THE_BOX_CONFIGURATION);
-                
-            } catch (InterruptedException e) {
-                throw new ExceptionInInitializerError("Problem getting class path entries from FindBugs");
-            }
+            return ThreadUnsafeAnalysisSession.createWithGivenClassPath(mutabilityDetectorClasspath, 
+                    new ClassPathBasedCheckerRunnerFactory(mutabilityDetectorClasspath, ExceptionPolicy.FAIL_FAST), 
+                    new MutabilityCheckerFactory(),
+                    verifierFactory,
+                    OUT_OF_THE_BOX_CONFIGURATION);
         }
         
         private ClassLoadingVerifierFactory createClassLoadingVerifierFactory(String[] classPathFiles) {

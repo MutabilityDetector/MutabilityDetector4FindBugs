@@ -9,7 +9,7 @@ import edu.umd.cs.findbugs.classfile.ICodeBase;
 
 public class FBCodeBasePathExtractor {
 
-    public List<String> listOfCodeBasePaths(IClassPath findBugsClassPath) throws InterruptedException {
+    public List<String> listOfCodeBasePaths(IClassPath findBugsClassPath) {
         List<String> codeBasePaths = new ArrayList<String>();
         pathsFromCodeBase(codeBasePaths, findBugsClassPath.appCodeBaseIterator());
         pathsFromCodeBase(codeBasePaths, findBugsClassPath.auxCodeBaseIterator());
