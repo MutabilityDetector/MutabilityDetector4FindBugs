@@ -37,9 +37,6 @@ As of version 0.9.1, support for FindBugs 1.3.9 has been relegated to a branch, 
     </tr>
 </table>
 
-#### Currently waiting on Maven Central sync
-The above may not yet be available from Maven Central. The previous version, 0.9, which only works for FindBugs v1.3.9, is available [here](http://search.maven.org/remotecontent?filepath=org/mutabilitydetector/MutabilityDetector4FindBugs/0.9/MutabilityDetector4FindBugs-0.9.jar). A temporary release, which works on FindBugs 2.0.0+, is available [here](https://github.com/MutabilityDetector/MutabilityDetector4FindBugs/releases/download/temporary-findbugs2-support-0.1/MutabilityDetector4FindBugs-0.10-SNAPSHOT.jar).
-
 
 ### See Also:
 
