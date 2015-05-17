@@ -1,7 +1,23 @@
 package org.mutabilitydetector.findbugs;
 
 
-import static org.mutabilitydetector.Configurations.OUT_OF_THE_BOX_CONFIGURATION;
+import edu.umd.cs.findbugs.BugReporter;
+import edu.umd.cs.findbugs.Detector;
+import edu.umd.cs.findbugs.ba.ClassContext;
+import edu.umd.cs.findbugs.classfile.Global;
+import edu.umd.cs.findbugs.classfile.IClassPath;
+import org.mutabilitydetector.AnalysisSession;
+import org.mutabilitydetector.ThreadUnsafeAnalysisSession;
+import org.mutabilitydetector.asmoverride.AsmVerifierFactory;
+import org.mutabilitydetector.asmoverride.ClassLoadingVerifierFactory;
+import org.mutabilitydetector.checkers.CheckerRunner.ExceptionPolicy;
+import org.mutabilitydetector.checkers.ClassPathBasedCheckerRunnerFactory;
+import org.mutabilitydetector.checkers.MutabilityCheckerFactory;
+import org.mutabilitydetector.checkers.MutabilityCheckerFactory.ReassignedFieldAnalysisChoice;
+import org.mutabilitydetector.classloading.CachingAnalysisClassLoader;
+import org.mutabilitydetector.classloading.ClassForNameWrapper;
+import org.mutabilitydetector.cli.URLFallbackClassLoader;
+import org.mutabilitydetector.internal.com.google.classpath.ClassPath;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -10,23 +26,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mutabilitydetector.AnalysisSession;
-import org.mutabilitydetector.ThreadUnsafeAnalysisSession;
-import org.mutabilitydetector.asmoverride.AsmVerifierFactory;
-import org.mutabilitydetector.asmoverride.ClassLoadingVerifierFactory;
-import org.mutabilitydetector.checkers.CheckerRunner.ExceptionPolicy;
-import org.mutabilitydetector.checkers.ClassPathBasedCheckerRunnerFactory;
-import org.mutabilitydetector.checkers.MutabilityCheckerFactory;
-import org.mutabilitydetector.classloading.CachingAnalysisClassLoader;
-import org.mutabilitydetector.classloading.ClassForNameWrapper;
-import org.mutabilitydetector.cli.URLFallbackClassLoader;
-import org.mutabilitydetector.repackaged.com.google.classpath.ClassPath;
-
-import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.ba.ClassContext;
-import edu.umd.cs.findbugs.classfile.Global;
-import edu.umd.cs.findbugs.classfile.IClassPath;
+import static org.mutabilitydetector.Configurations.OUT_OF_THE_BOX_CONFIGURATION;
 
 public class MutabilityDetector4FindBugs implements Detector {
     private static final String LOGGING_LABEL = MutabilityDetector4FindBugs.class.getSimpleName();
@@ -75,11 +75,14 @@ public class MutabilityDetector4FindBugs implements Detector {
             List<String> codeBasePaths = new FBCodeBasePathExtractor().listOfCodeBasePaths(findBugsClassPath);
             
             ClassPath mutabilityDetectorClasspath = new FBClasspathConverter().createClassPathForCodeBases(codeBasePaths);
-            AsmVerifierFactory verifierFactory = createClassLoadingVerifierFactory(codeBasePaths.toArray(new String[0]));
+            AsmVerifierFactory verifierFactory = createClassLoadingVerifierFactory(codeBasePaths.toArray(new String[codeBasePaths.size()]));
 
             return ThreadUnsafeAnalysisSession.createWithGivenClassPath(mutabilityDetectorClasspath, 
                     new ClassPathBasedCheckerRunnerFactory(mutabilityDetectorClasspath, ExceptionPolicy.FAIL_FAST), 
-                    new MutabilityCheckerFactory(),
+                    new MutabilityCheckerFactory(
+                        ReassignedFieldAnalysisChoice.NAIVE_PUT_FIELD_ANALYSIS,
+                        OUT_OF_THE_BOX_CONFIGURATION.immutableContainerClasses()
+                    ),
                     verifierFactory,
                     OUT_OF_THE_BOX_CONFIGURATION);
         }

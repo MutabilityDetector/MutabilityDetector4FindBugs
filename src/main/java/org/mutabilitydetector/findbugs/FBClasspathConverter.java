@@ -1,10 +1,10 @@
 package org.mutabilitydetector.findbugs;
 
+import org.mutabilitydetector.internal.com.google.classpath.ClassPath;
+import org.mutabilitydetector.internal.com.google.classpath.ClassPathFactory;
+
 import java.io.File;
 import java.util.List;
-
-import org.mutabilitydetector.repackaged.com.google.classpath.ClassPath;
-import org.mutabilitydetector.repackaged.com.google.classpath.ClassPathFactory;
 
 public class FBClasspathConverter {
 
