@@ -1,5 +1,7 @@
 # MutabilityDetector4FindBugs
 
+[![Join the chat at https://gitter.im/MutabilityDetector/MutabilityDetector4FindBugs](https://badges.gitter.im/MutabilityDetector/MutabilityDetector4FindBugs.svg)](https://gitter.im/MutabilityDetector/MutabilityDetector4FindBugs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 Run [Mutability Detector](https://github.com/MutabilityDetector/MutabilityDetector) during a [FindBugs](http://findbugs.sourceforge.net/) analysis to check all your classes annotated with `@Immutable`.
 
