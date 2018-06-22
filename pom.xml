@@ -42,7 +42,6 @@
     <url>git@github.com/MutabilityDetector/MutabilityDetector4FindBugs</url>
     <connection>scm:git:git@github.com:MutabilityDetector/MutabilityDetector4FindBugs.git</connection>
     <developerConnection>scm:git:git@github.com:MutabilityDetector/MutabilityDetector4FindBugs.git</developerConnection>
-    <tag>HEAD</tag>
   </scm>
 
   <developers>
