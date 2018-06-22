@@ -7,7 +7,7 @@ import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.IClassPath;
 import org.mutabilitydetector.AnalysisSession;
-import org.mutabilitydetector.ThreadUnsafeAnalysisSession;
+import org.mutabilitydetector.DefaultCachingAnalysisSession;
 import org.mutabilitydetector.asmoverride.AsmVerifierFactory;
 import org.mutabilitydetector.asmoverride.ClassLoadingVerifierFactory;
 import org.mutabilitydetector.checkers.CheckerRunner.ExceptionPolicy;
@@ -77,7 +77,7 @@ public class MutabilityDetector4FindBugs implements Detector {
             ClassPath mutabilityDetectorClasspath = new FBClasspathConverter().createClassPathForCodeBases(codeBasePaths);
             AsmVerifierFactory verifierFactory = createClassLoadingVerifierFactory(codeBasePaths.toArray(new String[codeBasePaths.size()]));
 
-            return ThreadUnsafeAnalysisSession.createWithGivenClassPath(mutabilityDetectorClasspath, 
+            return DefaultCachingAnalysisSession.createWithGivenClassPath(mutabilityDetectorClasspath,
                     new ClassPathBasedCheckerRunnerFactory(mutabilityDetectorClasspath, ExceptionPolicy.FAIL_FAST), 
                     new MutabilityCheckerFactory(
                         ReassignedFieldAnalysisChoice.NAIVE_PUT_FIELD_ANALYSIS,
