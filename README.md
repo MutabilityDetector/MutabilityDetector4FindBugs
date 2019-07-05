@@ -42,6 +42,3 @@ As of version 0.9.1, support for FindBugs 1.3.9 has been relegated to a branch, 
 
 [How to configure a custom detector to run during FindBugs analysis](https://code.google.com/p/findbugs/wiki/DetectorPluginTutorial#Loading_Our_Plugin)
 
-### Java 8 Compatibility
-![Compatibility Badge](https://java.net/downloads/adoptopenjdk/compat.svg)
-
